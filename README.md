@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Détection de Fraudes - Transactions par Chèque
 
 ## 📋 Description du projet
@@ -122,4 +121,4 @@ Projet académique - M2 SISE - Université Lyon 2
 
 =======
 # projet_Fouilles_de_Donn-es_Massives
->>>>>>> 024cce60415aa46060a11126d8580bcb291c1e80
+
