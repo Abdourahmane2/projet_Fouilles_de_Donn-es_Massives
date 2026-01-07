@@ -1,32 +1,28 @@
 \babel@toc {french}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {2.1}{\ignorespaces Caractéristiques générales du jeu de données}}{9}{table.caption.3}%
-\contentsline {table}{\numberline {2.2}{\ignorespaces Répartition train/test}}{10}{table.caption.4}%
-\contentsline {table}{\numberline {2.3}{\ignorespaces Distribution de la variable cible}}{11}{table.caption.5}%
-\contentsline {table}{\numberline {2.4}{\ignorespaces Variables les plus discriminantes (différence de moyenne fraude vs normal)}}{11}{table.caption.6}%
+\contentsline {table}{\numberline {2.1}{\ignorespaces Caractéristiques générales du jeu de données}}{8}{table.caption.1}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Répartition train/test}}{9}{table.caption.2}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces Distribution de la variable cible}}{10}{table.caption.3}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Variables les plus discriminantes (différence de moyenne fraude vs normal)}}{10}{table.caption.4}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Variables avec valeurs manquantes}}{12}{table.caption.7}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Corrections des types de données}}{13}{table.caption.8}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Features retenues pour la modélisation}}{13}{table.caption.9}%
-\contentsline {table}{\numberline {3.4}{\ignorespaces Résumé du prétraitement}}{14}{table.caption.10}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Variables avec valeurs manquantes}}{11}{table.caption.5}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Corrections des types de données}}{12}{table.caption.6}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Features retenues pour la modélisation}}{12}{table.caption.7}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Résumé du prétraitement}}{13}{table.caption.8}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Méthodes testées pour l'optimisation du F1-Score}}{16}{table.caption.11}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Résultats des 5 méthodes (seuil par défaut = 0.5)}}{17}{table.caption.12}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces Impact de l'optimisation du seuil}}{18}{table.caption.13}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces Détail des performances - LightGBM + ADASYN (seuil = 0.74)}}{18}{table.caption.14}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces Matrice de confusion - LightGBM + ADASYN (seuil = 0.74)}}{18}{table.caption.15}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Méthodes testées pour l'optimisation du F1-Score}}{15}{table.caption.9}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Résultats des 5 méthodes (seuil par défaut = 0.5)}}{16}{table.caption.10}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Impact de l'optimisation du seuil}}{17}{table.caption.11}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Détail des performances - LightGBM + ADASYN (seuil = 0.74)}}{17}{table.caption.12}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Matrice de confusion - LightGBM + ADASYN (seuil = 0.74)}}{17}{table.caption.13}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Matrice de coûts}}{20}{table.caption.16}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Perte FN selon le montant}}{20}{table.caption.17}%
-\contentsline {table}{\numberline {5.3}{\ignorespaces Marge de référence (tout accepter)}}{21}{table.caption.18}%
-\contentsline {table}{\numberline {5.4}{\ignorespaces Comparaison des marges par méthode}}{22}{table.caption.19}%
-\contentsline {table}{\numberline {5.5}{\ignorespaces Performance du meilleur modèle}}{22}{table.caption.20}%
-\contentsline {table}{\numberline {5.6}{\ignorespaces Comparaison des objectifs}}{23}{table.caption.21}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Matrice de coûts}}{19}{table.caption.14}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Perte FN selon le montant}}{19}{table.caption.15}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Marge de référence (tout accepter)}}{20}{table.caption.16}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Comparaison des marges par méthode}}{21}{table.caption.17}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Performance du meilleur modèle}}{21}{table.caption.18}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Comparaison des objectifs}}{22}{table.caption.19}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Résumé Partie 1}}{24}{table.caption.22}%
-\contentsline {table}{\numberline {6.2}{\ignorespaces Résumé Partie 2}}{24}{table.caption.23}%
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Bibliothèques utilisées}}{27}{table.caption.24}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Résultats complets Partie 1}}{30}{table.caption.25}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Résultats complets Partie 2}}{30}{table.caption.26}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Résumé Partie 1}}{23}{table.caption.20}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Résumé Partie 2}}{23}{table.caption.21}%

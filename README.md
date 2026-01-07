@@ -108,7 +108,7 @@ jupyter notebook notebooks/
 
 | Modèle | F-mesure | Precision | Recall | AUC-ROC |
 |--------|----------|-----------|--------|---------|
-|  | LightGBM + ADASYN  | 0.107 | - | - |
+| LightGBM + ADASYN | 0.107  |  | - | - |
 
 ## 👥 Auteurs
 
