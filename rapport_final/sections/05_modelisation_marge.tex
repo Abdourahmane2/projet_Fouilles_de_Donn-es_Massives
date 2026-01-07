@@ -1,0 +1,205 @@
+% ============================================
+% CHAPITRE 5 : MODÉLISATION - PARTIE 2 (MARGE)
+% ============================================
+
+\section{Objectif}
+
+L'objectif de cette seconde partie est de maximiser la \textbf{marge du commerçant} en tenant compte des coûts réels associés à chaque type de décision.
+
+Contrairement à la Partie 1 où toutes les erreurs étaient traitées de manière égale, nous utilisons ici une \textbf{matrice de coûts asymétrique} qui reflète la réalité économique.
+
+\section{Matrice de coûts}
+
+Pour une transaction de montant $m$ :
+
+\begin{table}[H]
+\centering
+\caption{Matrice de coûts}
+\begin{tabular}{lll}
+\toprule
+\textbf{Situation} & \textbf{Description} & \textbf{Gain/Perte} \\
+\midrule
+TN (Vrai Négatif) & Client normal accepté & $+5\% \times m$ \\
+FP (Faux Positif) & Client normal refusé & $-70\% \times 5\% \times m$ \\
+TP (Vrai Positif) & Fraude détectée & $0$ \\
+FN (Faux Négatif) & Fraude manquée & Variable selon $m$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Détail des coûts FN (Faux Négatifs)}
+
+La perte associée à une fraude non détectée dépend du montant de la transaction :
+
+\begin{table}[H]
+\centering
+\caption{Perte FN selon le montant}
+\begin{tabular}{lc}
+\toprule
+\textbf{Tranche de montant} & \textbf{Perte} \\
+\midrule
+$m \leq 20$ € & 0\% \\
+$20 < m \leq 50$ € & 20\% de $m$ \\
+$50 < m \leq 100$ € & 30\% de $m$ \\
+$100 < m \leq 200$ € & 50\% de $m$ \\
+$m > 200$ € & 80\% de $m$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Interprétation :} Les fraudes sur les petits montants ($\leq$ 20 €) sont couvertes par l'assurance, donc sans perte. Plus le montant augmente, plus la perte est importante.
+
+\section{Calcul de la marge}
+
+La marge totale est calculée comme la somme des gains/pertes sur toutes les transactions :
+
+\begin{equation}
+    Marge_{totale} = \sum_{i=1}^{n} gain_i(y_i, \hat{y}_i, m_i)
+\end{equation}
+
+où $gain_i$ est déterminé par la matrice de coûts en fonction de :
+\begin{itemize}
+    \item $y_i$ : Vraie étiquette (0 = normal, 1 = fraude)
+    \item $\hat{y}_i$ : Prédiction du modèle
+    \item $m_i$ : Montant de la transaction
+\end{itemize}
+
+\section{Référence : Sans détection de fraude}
+
+Avant d'évaluer les modèles, nous calculons la marge de référence si le commerçant acceptait \textbf{toutes} les transactions sans système de détection :
+
+\begin{table}[H]
+\centering
+\caption{Marge de référence (tout accepter)}
+\begin{tabular}{ll}
+\toprule
+\textbf{Composante} & \textbf{Montant} \\
+\midrule
+Gain TN (clients normaux) & +2 294 459 € \\
+Perte FP (fausses alertes) & 0 € \\
+Perte FN (fraudes manquées) & -352 608 € \\
+\midrule
+\textbf{Marge totale} & \textbf{1 941 852 €} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Cette valeur sert de \textbf{point de comparaison} : un système de détection n'est utile que s'il améliore cette marge.
+
+\section{Méthodes testées}
+
+Nous avons testé plusieurs approches :
+
+\begin{enumerate}
+    \item \textbf{LightGBM + ADASYN} (meilleur modèle de la Partie 1)
+    \item \textbf{LightGBM + ADASYN avec seuil optimisé} pour la marge
+    \item \textbf{XGBoost avec différents poids de classe}
+    \item \textbf{Random Forest + SMOTE avec seuil optimisé}
+    \item \textbf{Seuil adaptatif} (seuils différents selon le montant)
+    \item \textbf{Ensemble} (moyenne des probabilités de plusieurs modèles)
+\end{enumerate}
+
+\section{Optimisation du seuil pour la marge}
+
+Contrairement à la Partie 1 où on maximisait le F1-Score, ici on cherche le seuil qui maximise la marge en euros.
+
+\textbf{Méthode :} Pour chaque seuil $s \in [0.01, 0.99]$, calculer la marge totale et retenir le seuil donnant la meilleure marge.
+
+\section{Stratégie de seuil adaptatif}
+
+L'idée est d'utiliser des seuils différents selon le montant de la transaction :
+\begin{itemize}
+    \item Pour les petits montants : seuil élevé (moins prudent)
+    \item Pour les gros montants : seuil bas (plus prudent)
+\end{itemize}
+
+\textbf{Justification :} Le coût d'une fraude manquée est beaucoup plus élevé pour les gros montants, donc il vaut mieux être plus prudent.
+
+\section{Résultats}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des marges par méthode}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Méthode} & \textbf{Marge (€)} & \textbf{Gain TN} & \textbf{Perte FP} & \textbf{Perte FN} \\
+\midrule
+XGBoost optimisé & \textbf{2 010 033} & 2 269 681 & -17 345 & -242 304 \\
+Ensemble & 1 998 133 & 2 277 594 & -11 806 & -267 656 \\
+LightGBM (seuil opt) & 1 988 509 & 2 273 072 & -14 971 & -269 591 \\
+RF + SMOTE optimisé & 1 978 646 & 2 289 693 & -3 337 & -307 710 \\
+\textbf{Référence} & \textbf{1 941 852} & 2 294 459 & 0 & -352 608 \\
+Seuil adaptatif & 1 665 461 & 2 000 923 & -205 476 & -129 986 \\
+LightGBM (seuil 0.5) & 1 641 927 & 1 994 041 & -210 293 & -141 821 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Analyse des résultats}
+
+\subsection{Meilleur modèle : XGBoost optimisé}
+
+\begin{table}[H]
+\centering
+\caption{Performance du meilleur modèle}
+\begin{tabular}{ll}
+\toprule
+\textbf{Métrique} & \textbf{Valeur} \\
+\midrule
+Marge totale & 2 010 033 € \\
+Amélioration vs référence & +68 181 € (+3.5\%) \\
+Fraudes détectées (TP) & 628 sur 6 573 (9.6\%) \\
+Fraudes manquées (FN) & 5 945 \\
+Fausses alertes (FP) & Perte de 17 345 € \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Observations clés}
+
+\begin{enumerate}
+    \item \textbf{Le système de détection améliore la marge} : +68 181 € par rapport à la stratégie "tout accepter".
+    
+    \item \textbf{Le seuil par défaut (0.5) fait perdre de l'argent} : LightGBM avec seuil 0.5 donne une marge de 1 641 927 €, inférieure à la référence (1 941 852 €).
+    
+    \item \textbf{L'optimisation du seuil est cruciale} : Le même modèle avec un seuil optimisé passe de 1 641 927 € à 1 988 509 €.
+    
+    \item \textbf{Le seuil adaptatif n'est pas optimal} : Bien qu'il détecte plus de fraudes (1 349 TP), il génère trop de fausses alertes (-205 476 €).
+    
+    \item \textbf{L'équilibre est clé} : Le meilleur modèle (XGBoost) trouve le bon compromis entre :
+    \begin{itemize}
+        \item Réduire les pertes FN : de 352 608 € à 242 304 € (-110 304 €)
+        \item Limiter les pertes FP : seulement 17 345 € de manque à gagner
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Comparaison avec la Partie 1}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des objectifs}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Critère} & \textbf{Partie 1 (F1)} & \textbf{Partie 2 (Marge)} \\
+\midrule
+Meilleur modèle & LightGBM + ADASYN & XGBoost optimisé \\
+Seuil optimal & 0.74 & Variable \\
+Fraudes détectées & 583 (8.9\%) & 628 (9.6\%) \\
+Objectif atteint & F1 = 0.107 & +68 181 € \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion de la Partie 2}
+
+\begin{itemize}
+    \item Le système de détection de fraude \textbf{améliore la marge} du commerçant de \textbf{+68 181 €} (+3.5\%).
+    
+    \item Le meilleur modèle est \textbf{XGBoost avec optimisation du seuil}.
+    
+    \item L'optimisation du seuil est \textbf{encore plus importante} que dans la Partie 1 : un mauvais seuil peut faire perdre de l'argent par rapport à l'absence de détection.
+    
+    \item La stratégie de seuil adaptatif, bien qu'intuitive, n'est pas optimale dans notre cas car elle génère trop de fausses alertes.
+    
+    \item Le gain de 68 181 € justifie économiquement la mise en place d'un système de détection de fraude.
+\end{itemize}

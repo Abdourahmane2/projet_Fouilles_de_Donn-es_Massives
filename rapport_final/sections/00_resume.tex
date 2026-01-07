@@ -1,0 +1,46 @@
+% ============================================
+% RÉSUMÉ
+% ============================================
+
+Ce projet s'inscrit dans le cadre du Master 2 SISE et porte sur la détection de fraudes dans les transactions par chèque. Les données proviennent du Fichier National des Chèques Irréguliers (FNCI), géré par la Banque de France.
+
+\vspace{0.5cm}
+
+\textbf{Objectifs :}
+\begin{itemize}
+    \item \textbf{Partie 1} : Maximiser le F-mesure (F1-Score) pour détecter le maximum de fraudes
+    \item \textbf{Partie 2} : Maximiser la marge du commerçant en utilisant une matrice de coûts asymétrique
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Données :}
+\begin{itemize}
+    \item 4 646 773 transactions (23 variables)
+    \item Split temporel : entraînement (février-août 2017) / test (septembre-novembre 2017)
+    \item Fort déséquilibre : 0.60\% de fraudes dans l'ensemble d'entraînement
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{Résultats principaux :}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Critère} & \textbf{Meilleur modèle} & \textbf{Performance} \\
+\midrule
+F1-Score & LightGBM + ADASYN & 0.107 (seuil optimisé) \\
+Marge & XGBoost optimisé & +68 181 € vs référence \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\vspace{0.5cm}
+
+\textbf{Conclusion :} Le système de détection de fraude permet d'améliorer la marge du commerçant de +3.5\% par rapport à une stratégie sans détection.
+
+\vspace{0.5cm}
+
+\textbf{Mots-clés :} Détection de fraude, Classification déséquilibrée, Machine Learning, SMOTE, ADASYN, Random Forest, XGBoost, LightGBM, Matrice de coûts

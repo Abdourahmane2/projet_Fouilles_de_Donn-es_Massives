@@ -1,0 +1,213 @@
+% ============================================
+% CHAPITRE 4 : MODÉLISATION - PARTIE 1 (F1-SCORE)
+% ============================================
+
+\section{Objectif}
+
+L'objectif de cette première partie est de maximiser le \textbf{F1-Score}, défini comme :
+
+\begin{equation}
+    F1 = 2 \times \frac{Precision \times Recall}{Precision + Recall} = \frac{2 \times TP}{2 \times TP + FP + FN}
+\end{equation}
+
+où :
+\begin{itemize}
+    \item TP = Vrais Positifs (fraudes correctement détectées)
+    \item FP = Faux Positifs (fausses alertes)
+    \item FN = Faux Négatifs (fraudes manquées)
+\end{itemize}
+
+\section{Défi du déséquilibre des classes}
+
+Avec un ratio de 1:166 entre fraudes et transactions normales, un classificateur naïf qui prédirait toujours "normal" obtiendrait :
+\begin{itemize}
+    \item Accuracy : 99.40\%
+    \item F1-Score : 0\%
+\end{itemize}
+
+Pour contrer ce déséquilibre, nous avons utilisé plusieurs techniques de rééchantillonnage.
+
+\section{Techniques de rééchantillonnage}
+
+\subsection{SMOTE (Synthetic Minority Over-sampling Technique)}
+
+SMOTE génère des échantillons synthétiques de la classe minoritaire en interpolant entre des exemples existants proches dans l'espace des features.
+
+\textbf{Principe :}
+\begin{enumerate}
+    \item Pour chaque exemple de la classe minoritaire, identifier les k plus proches voisins
+    \item Créer des exemples synthétiques sur le segment reliant l'exemple à ses voisins
+\end{enumerate}
+
+\subsection{ADASYN (Adaptive Synthetic Sampling)}
+
+ADASYN est une extension de SMOTE qui génère plus d'échantillons synthétiques pour les exemples de la classe minoritaire qui sont plus difficiles à classifier (proches de la frontière de décision).
+
+\textbf{Avantage :} Meilleure adaptation aux zones difficiles de l'espace des features.
+
+\subsection{Sous-échantillonnage (Random Under-Sampling)}
+
+Cette technique réduit le nombre d'exemples de la classe majoritaire pour équilibrer les classes.
+
+\textbf{Inconvénient :} Perte d'information potentielle.
+
+\subsection{SMOTETomek}
+
+Combinaison de SMOTE et de la suppression des liens Tomek (paires d'exemples de classes différentes qui sont plus proches voisins l'un de l'autre).
+
+\subsection{Pondération des classes (Cost-Sensitive Learning)}
+
+Plutôt que de modifier les données, on attribue des poids différents aux classes dans la fonction de perte du modèle.
+
+\section{Méthodes testées}
+
+Nous avons testé 5 méthodes différentes :
+
+\begin{table}[H]
+\centering
+\caption{Méthodes testées pour l'optimisation du F1-Score}
+\begin{tabular}{clc}
+\toprule
+\textbf{\#} & \textbf{Méthode} & \textbf{Technique} \\
+\midrule
+1 & Random Forest Baseline & Aucun rééchantillonnage \\
+2 & Random Forest + SMOTE & Sur-échantillonnage synthétique \\
+3 & XGBoost Weighted & Pondération des classes \\
+4 & LightGBM + ADASYN & Sur-échantillonnage adaptatif \\
+5 & Random Forest + Under-Sampling & Sous-échantillonnage \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Résultats}
+
+\subsection{Comparaison des méthodes}
+
+\begin{table}[H]
+\centering
+\caption{Résultats des 5 méthodes (seuil par défaut = 0.5)}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Méthode} & \textbf{F1-Score} & \textbf{Precision} & \textbf{Recall} & \textbf{ROC-AUC} & \textbf{Accuracy} \\
+\midrule
+LightGBM + ADASYN & \textbf{0.0685} & 0.0388 & 0.2947 & 0.7219 & 92.95\% \\
+RF + SMOTE & 0.0483 & 0.0257 & 0.4059 & 0.7182 & 85.94\% \\
+RF + UnderSampling & 0.0465 & 0.0243 & 0.5425 & 0.7459 & 80.45\% \\
+RF Baseline & 0.0359 & 0.6836 & 0.0184 & 0.7426 & 99.13\% \\
+XGBoost Weighted & 0.0346 & 0.0178 & 0.6983 & 0.7517 & 65.75\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analyse des résultats}
+
+\textbf{Observations clés :}
+
+\begin{enumerate}
+    \item \textbf{LightGBM + ADASYN} obtient le meilleur F1-Score (0.0685), offrant le meilleur compromis entre précision et rappel.
+    
+    \item \textbf{RF Baseline} a une précision très élevée (68.36\%) mais un rappel catastrophique (1.84\%). Le modèle est trop conservateur.
+    
+    \item \textbf{XGBoost Weighted} a un rappel élevé (69.83\%) mais une précision très faible (1.78\%), générant trop de fausses alertes.
+    
+    \item Les techniques de rééchantillonnage (SMOTE, ADASYN) améliorent significativement le F1-Score par rapport au baseline.
+\end{enumerate}
+
+\section{Optimisation du seuil de décision}
+
+Par défaut, un classificateur utilise un seuil de 0.5 : si la probabilité prédite est $\geq$ 0.5, on prédit "fraude".
+
+Pour les données déséquilibrées, ce seuil n'est pas optimal. Nous avons recherché le seuil qui maximise le F1-Score.
+
+\subsection{Méthode}
+
+Pour chaque seuil $s \in [0.01, 0.99]$ :
+\begin{enumerate}
+    \item Calculer les prédictions : $\hat{y} = 1$ si $P(fraude) \geq s$, sinon $\hat{y} = 0$
+    \item Calculer le F1-Score correspondant
+    \item Retenir le seuil donnant le meilleur F1-Score
+\end{enumerate}
+
+\subsection{Résultat}
+
+Pour le meilleur modèle (LightGBM + ADASYN) :
+
+\begin{table}[H]
+\centering
+\caption{Impact de l'optimisation du seuil}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Configuration} & \textbf{Seuil} & \textbf{F1-Score} \\
+\midrule
+Par défaut & 0.50 & 0.0685 \\
+Optimisé & 0.74 & \textbf{0.1070} \\
+\midrule
+\textbf{Amélioration} & & \textbf{+56\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+L'optimisation du seuil permet d'améliorer le F1-Score de \textbf{56\%}, passant de 0.0685 à 0.1070.
+
+\section{Analyse du meilleur modèle}
+
+\subsection{Performance avec seuil optimisé}
+
+\begin{table}[H]
+\centering
+\caption{Détail des performances - LightGBM + ADASYN (seuil = 0.74)}
+\begin{tabular}{ll}
+\toprule
+\textbf{Métrique} & \textbf{Valeur} \\
+\midrule
+F1-Score & 0.1070 \\
+Precision & 0.0388 \\
+Recall & 0.2947 \\
+ROC-AUC & 0.7219 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Matrice de confusion}
+
+\begin{table}[H]
+\centering
+\caption{Matrice de confusion - LightGBM + ADASYN (seuil = 0.74)}
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Prédit Normal} & \textbf{Prédit Fraude} \\
+\midrule
+\textbf{Réel Normal} & 737 094 (TN) & 3 744 (FP) \\
+\textbf{Réel Fraude} & 5 990 (FN) & 583 (TP) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Interprétation :}
+\begin{itemize}
+    \item \textbf{Fraudes détectées} : 583 sur 6 573 (8.9\%)
+    \item \textbf{Fraudes manquées} : 5 990 sur 6 573 (91.1\%)
+    \item \textbf{Fausses alertes} : 3 744 (0.51\% des transactions normales)
+\end{itemize}
+
+\section{Importance des variables}
+
+Les variables les plus importantes pour la détection de fraude sont :
+
+\begin{enumerate}
+    \item \textbf{ScoringFP1} : Score de risque principal
+    \item \textbf{CA3TR} : Chiffre d'affaires sur 3 mois
+    \item \textbf{ScoringFP2} : Score de risque secondaire
+    \item \textbf{Montant} : Montant de la transaction
+    \item \textbf{VerifianceCPT3} : Indicateur de vérification
+\end{enumerate}
+
+\section{Conclusion de la Partie 1}
+
+\begin{itemize}
+    \item Le meilleur modèle pour maximiser le F1-Score est \textbf{LightGBM + ADASYN}.
+    \item Le F1-Score obtenu est de \textbf{0.107} avec un seuil optimisé de 0.74.
+    \item La technique ADASYN est plus efficace que SMOTE car elle génère plus d'exemples dans les zones difficiles.
+    \item L'optimisation du seuil est cruciale pour les données déséquilibrées (+56\% de F1-Score).
+    \item Malgré les optimisations, seulement 8.9\% des fraudes sont détectées, ce qui s'explique par les faibles corrélations entre les features et la cible.
+\end{itemize}

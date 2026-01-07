@@ -1,0 +1,137 @@
+\documentclass[12pt,a4paper]{report}
+
+% ============================================
+% PACKAGES
+% ============================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{appendix}
+
+% ============================================
+% CONFIGURATION
+% ============================================
+\geometry{margin=2.5cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green
+}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{M2 SISE}
+\fancyfoot[C]{\thepage}
+
+% Style des chapitres
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+% Chemin des images
+\graphicspath{{figures/}{../reports/figures/}}
+
+% ============================================
+% INFORMATIONS DU DOCUMENT
+% ============================================
+\title{
+    \vspace{-2cm}
+    \includegraphics[width=0.3\textwidth]{logo.jpg}\\[1cm]
+    \textbf{Détection de Fraudes sur les Transactions par Chèque}\\[0.5cm]
+    \large Projet de Fouille de Données Massives\\[1cm]
+}
+
+\author{
+    \textbf{Abdourahmane Timera}\\[0.3cm]
+    Master 2 SISE\\ 
+    Université Lumière Lyon 2
+}
+
+\date{Année universitaire 2025-2026}
+
+% ============================================
+% DEBUT DU DOCUMENT
+% ============================================
+\begin{document}
+
+% Page de titre
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Résumé
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+\input{sections/00_resume}
+\newpage
+
+% Table des matières
+\tableofcontents
+\newpage
+
+% Liste des figures
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+\newpage
+
+% Liste des tableaux
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\newpage
+
+% ============================================
+% CHAPITRES
+% ============================================
+
+\chapter{Introduction}
+\input{sections/01_introduction}
+
+\chapter{Description des données}
+\input{sections/02_donnees}
+
+\chapter{Prétraitement des données}
+\input{sections/03_pretraitement}
+
+\chapter{Modélisation - Partie 1 : Optimisation du F1-Score}
+\input{sections/04_modelisation_f1}
+
+\chapter{Modélisation - Partie 2 : Optimisation de la Marge}
+\input{sections/05_modelisation_marge}
+
+\chapter{Conclusion}
+\input{sections/06_conclusion}
+
+% ============================================
+% ANNEXES
+% ============================================
+\appendix
+\chapter{Annexes}
+\input{sections/07_annexes}
+
+% ============================================
+% BIBLIOGRAPHIE (optionnel)
+% ============================================
+% \bibliographystyle{plain}
+% \bibliography{references}
+
+\end{document}

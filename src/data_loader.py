@@ -50,13 +50,13 @@ def load_raw_data(filename: str = None, verbose: bool = True) -> pd.DataFrame:
         )
     
     if verbose:
-        print(f"📂 Chargement des données depuis: {filepath}")
+        print(f" Chargement des données depuis: {filepath}")
     
     # Chargement avec les paramètres français
     df = pd.read_csv(filepath, **FILE_PARAMS)
     
     if verbose:
-        print(f"✅ Données chargées: {df.shape[0]:,} lignes × {df.shape[1]} colonnes")
+        print(f" Données chargées: {df.shape[0]:,} lignes × {df.shape[1]} colonnes")
     
     return df
 
@@ -195,7 +195,7 @@ def split_by_date(df: pd.DataFrame, verbose: bool = True) -> tuple:
     df_test = df[test_mask].copy()
     
     if verbose:
-        print(f"\n📅 Séparation temporelle:")
+        print(f"\n Séparation temporelle:")
         print(f"   Train: {TRAIN_START_DATE} → {TRAIN_END_DATE}")
         print(f"   - {len(df_train):,} transactions")
         print(f"   - Fraudes: {df_train[TARGET_COLUMN].sum():,} ({df_train[TARGET_COLUMN].mean()*100:.2f}%)")
@@ -217,12 +217,12 @@ def print_data_summary(summary: dict):
     print("RÉSUMÉ DES DONNÉES")
     print("=" * 60)
     
-    print(f"\n📊 Dimensions:")
+    print(f"\n Dimensions:")
     print(f"   - Lignes: {summary['n_rows']:,}")
     print(f"   - Colonnes: {summary['n_cols']}")
     print(f"   - Mémoire: {summary['memory_mb']:.2f} MB")
     
-    print(f"\n❓ Valeurs manquantes:")
+    print(f"\n Valeurs manquantes:")
     print(f"   - Total: {summary['missing_total']:,}")
     if summary['missing_total'] > 0:
         missing = {k: v for k, v in summary['missing_by_column'].items() if v > 0}
@@ -230,7 +230,7 @@ def print_data_summary(summary: dict):
             print(f"   - {col}: {count:,}")
     
     if "target_distribution" in summary:
-        print(f"\n🎯 Distribution de la cible ({TARGET_COLUMN}):")
+        print(f"\n Distribution de la cible ({TARGET_COLUMN}):")
         for label, count in summary["target_distribution"].items():
             pct = count / summary["n_rows"] * 100
             label_str = "Normal" if label == 0 else "Fraude"
@@ -238,7 +238,7 @@ def print_data_summary(summary: dict):
         print(f"   - Ratio de déséquilibre: 1:{1/summary['imbalance_ratio']:.1f}")
     
     if "date_min" in summary:
-        print(f"\n📅 Période:")
+        print(f"\n Période:")
         print(f"   - Début: {summary['date_min']}")
         print(f"   - Fin: {summary['date_max']}")
         print(f"   - Durée: {summary['date_range_days']} jours")
@@ -267,9 +267,9 @@ def load_and_prepare_data(filename: str = None, verbose: bool = True) -> tuple:
     # 2. Valider les colonnes
     validation = validate_columns(df)
     if not validation["valid"]:
-        print(f"⚠️ Colonnes manquantes: {validation['missing_columns']}")
+        print(f" Colonnes manquantes: {validation['missing_columns']}")
     if validation["extra_columns"]:
-        print(f"ℹ️ Colonnes supplémentaires: {validation['extra_columns']}")
+        print(f" Colonnes supplémentaires: {validation['extra_columns']}")
     
     # 3. Convertir les types
     df = convert_data_types(df, verbose)
@@ -295,9 +295,9 @@ if __name__ == "__main__":
     
     try:
         df_train, df_test, summary = load_and_prepare_data()
-        print("\n✅ Chargement réussi!")
+        print("\n Chargement réussi!")
     except FileNotFoundError as e:
-        print(f"\n❌ Erreur: {e}")
+        print(f"\n Erreur: {e}")
         print("\nPour tester ce module:")
         print(f"1. Placez votre fichier de données dans: {RAW_DATA_DIR}")
         print(f"2. Modifiez DATA_FILENAME dans config/config.py si nécessaire")

@@ -1,0 +1,173 @@
+% ============================================
+% CHAPITRE 2 : DESCRIPTION DES DONNÉES
+% ============================================
+
+\section{Source des données}
+
+Les données utilisées dans ce projet proviennent du \textbf{Fichier National des Chèques Irréguliers (FNCI)}, géré par la Banque de France. Ce fichier recense les informations relatives aux transactions par chèque effectuées en France.
+
+\section{Vue d'ensemble}
+
+\begin{table}[H]
+\centering
+\caption{Caractéristiques générales du jeu de données}
+\begin{tabular}{ll}
+\toprule
+\textbf{Caractéristique} & \textbf{Valeur} \\
+\midrule
+Nombre total de transactions & 4 646 773 \\
+Nombre de variables & 23 \\
+Variable cible & FlagImpaye (0 = normal, 1 = fraude) \\
+Période couverte & Février 2017 - Novembre 2017 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Description des variables}
+
+Le jeu de données contient 23 variables réparties en plusieurs catégories :
+
+\subsection{Variable cible}
+
+\begin{itemize}
+    \item \textbf{FlagImpaye} : Indicateur de fraude (1 = impayé/fraude, 0 = normal)
+\end{itemize}
+
+\subsection{Variables d'identification}
+
+\begin{itemize}
+    \item \textbf{Identifiant} : Identifiant unique de la transaction
+    \item \textbf{CodeDecision} : Code de décision associé à la transaction
+\end{itemize}
+
+\subsection{Variables temporelles}
+
+\begin{itemize}
+    \item \textbf{mois} : Mois de la transaction (2 = février à 11 = novembre)
+\end{itemize}
+
+\subsection{Variables de montant}
+
+\begin{itemize}
+    \item \textbf{Montant} : Montant de la transaction en euros
+    \item \textbf{CA3TR} : Chiffre d'affaires sur 3 mois (transactions)
+    \item \textbf{CA3TRetMtt} : Chiffre d'affaires sur 3 mois (montants)
+\end{itemize}
+
+\subsection{Variables de scoring}
+
+\begin{itemize}
+    \item \textbf{ScoringFP1} : Score de risque FP1
+    \item \textbf{ScoringFP2} : Score de risque FP2
+    \item \textbf{ScoringFP3} : Score de risque FP3
+    \item \textbf{ScoringFP4} : Score de risque FP4
+\end{itemize}
+
+\subsection{Variables Verifinance}
+
+\begin{itemize}
+    \item \textbf{VerifianceCPT1} à \textbf{VerifianceCPT5} : Indicateurs de vérification comptable
+\end{itemize}
+
+\subsection{Autres variables}
+
+\begin{itemize}
+    \item \textbf{Enseigne} : Identifiant de l'enseigne commerciale
+    \item \textbf{Secteur} : Secteur d'activité
+    \item Et autres variables caractérisant la transaction
+\end{itemize}
+
+\section{Split temporel}
+
+Conformément aux bonnes pratiques pour les données temporelles, nous avons effectué un split temporel :
+
+\begin{table}[H]
+\centering
+\caption{Répartition train/test}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Ensemble} & \textbf{Période} & \textbf{Transactions} & \textbf{Taux de fraude} \\
+\midrule
+Entraînement & Février - Août 2017 & 3 899 362 & 0.60\% \\
+Test & Septembre - Novembre 2017 & 747 411 & 0.88\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Remarque importante} : Le taux de fraude est plus élevé dans l'ensemble de test (0.88\%) que dans l'ensemble d'entraînement (0.60\%), ce qui suggère une évolution temporelle des patterns de fraude.
+
+\section{Déséquilibre des classes}
+
+Le problème majeur de ce jeu de données est le \textbf{fort déséquilibre des classes} :
+
+\begin{table}[H]
+\centering
+\caption{Distribution de la variable cible}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Classe} & \textbf{Entraînement} & \textbf{Test} \\
+\midrule
+Normal (0) & 3 875 940 (99.40\%) & 740 838 (99.12\%) \\
+Fraude (1) & 23 422 (0.60\%) & 6 573 (0.88\%) \\
+\midrule
+\textbf{Ratio} & 1:166 & 1:114 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ce déséquilibre extrême (1 fraude pour 166 transactions normales) nécessite l'utilisation de techniques spécifiques :
+\begin{itemize}
+    \item Rééchantillonnage (SMOTE, ADASYN, sous-échantillonnage)
+    \item Pondération des classes
+    \item Métriques adaptées (F1-Score plutôt qu'accuracy)
+\end{itemize}
+
+\section{Analyse exploratoire}
+
+\subsection{Distribution des montants}
+
+Les montants des transactions présentent une distribution fortement asymétrique :
+
+\begin{itemize}
+    \item Moyenne : 62.31 €
+    \item Médiane : 35.00 €
+    \item Maximum : plus de 10 000 €
+    \item Forte concentration sur les petits montants
+\end{itemize}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{distribution_montant.png}
+%     \caption{Distribution des montants des transactions}
+% \end{figure}
+
+\subsection{Variables les plus discriminantes}
+
+L'analyse exploratoire a permis d'identifier les variables les plus discriminantes pour la détection de fraude :
+
+\begin{table}[H]
+\centering
+\caption{Variables les plus discriminantes (différence de moyenne fraude vs normal)}
+\begin{tabular}{lc}
+\toprule
+\textbf{Variable} & \textbf{Différence (\%)} \\
+\midrule
+ScoringFP1 & +410\% \\
+CA3TR & +290\% \\
+ScoringFP2 & -284\% \\
+ScoringFP3 & +200\% \\
+VerifianceCPT3 & +169\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Corrélations}
+
+L'analyse des corrélations a révélé :
+\begin{itemize}
+    \item Forte corrélation entre les variables VerifianceCPT
+    \item Corrélation entre Montant et CA3TRetMtt
+    \item Corrélations faibles avec la variable cible (maximum ~0.15)
+\end{itemize}
+
+Ces corrélations faibles avec la cible expliquent en partie la difficulté de la tâche de classification.

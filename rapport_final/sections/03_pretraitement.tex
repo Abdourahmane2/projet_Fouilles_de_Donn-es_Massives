@@ -1,0 +1,148 @@
+% ============================================
+% CHAPITRE 3 : PRÉTRAITEMENT DES DONNÉES
+% ============================================
+
+\section{Vue d'ensemble du prétraitement}
+
+Le prétraitement des données a suivi plusieurs étapes essentielles pour préparer les données à la modélisation :
+
+\begin{enumerate}
+    \item Gestion des valeurs manquantes
+    \item Correction des types de données
+    \item Suppression des variables non pertinentes
+    \item Sélection des features
+    \item Split temporel train/test
+\end{enumerate}
+
+\section{Gestion des valeurs manquantes}
+
+L'analyse des valeurs manquantes a révélé :
+
+\begin{table}[H]
+\centering
+\caption{Variables avec valeurs manquantes}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Variable} & \textbf{Valeurs manquantes} & \textbf{Pourcentage} \\
+\midrule
+CodeDecision & 4 590 905 & 98.80\% \\
+Autres variables & 0 & 0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La variable \texttt{CodeDecision} présentant 98.80\% de valeurs manquantes a été supprimée car elle n'apporte aucune information exploitable.
+
+\section{Correction des types de données}
+
+Plusieurs variables étaient stockées avec des types incorrects :
+
+\begin{table}[H]
+\centering
+\caption{Corrections des types de données}
+\begin{tabular}{lll}
+\toprule
+\textbf{Variable} & \textbf{Type original} & \textbf{Type corrigé} \\
+\midrule
+mois & float64 & int64 \\
+Enseigne & float64 & int64 \\
+Secteur & float64 & int64 \\
+VerifianceCPT1-5 & float64 & int64 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Suppression des variables non pertinentes}
+
+Les variables suivantes ont été supprimées :
+
+\begin{itemize}
+    \item \textbf{Identifiant} : Variable d'identification unique, non prédictive
+    \item \textbf{CodeDecision} : 98.80\% de valeurs manquantes
+    \item \textbf{mois} : Utilisé uniquement pour le split temporel
+    \item \textbf{FlagImpaye} : Variable cible (séparée)
+\end{itemize}
+
+\section{Sélection des features}
+
+Après suppression des variables non pertinentes, \textbf{18 features} ont été retenues pour la modélisation :
+
+\begin{table}[H]
+\centering
+\caption{Features retenues pour la modélisation}
+\begin{tabular}{ll}
+\toprule
+\textbf{Catégorie} & \textbf{Variables} \\
+\midrule
+Montant & Montant, CA3TR, CA3TRetMtt \\
+Scoring & ScoringFP1, ScoringFP2, ScoringFP3, ScoringFP4 \\
+Verifinance & VerifianceCPT1, VerifianceCPT2, VerifianceCPT3, \\
+            & VerifianceCPT4, VerifianceCPT5 \\
+Autres & Enseigne, Secteur, et autres \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Split temporel}
+
+Le split a été réalisé de manière temporelle pour respecter la chronologie des données :
+
+\begin{lstlisting}[language=Python, caption=Split temporel]
+# Ensemble d'entrainement : mois 2 a 8 (fevrier - aout)
+train_mask = data['mois'] <= 8
+X_train = data[train_mask].drop(columns=['FlagImpaye', 'mois'])
+y_train = data[train_mask]['FlagImpaye']
+
+# Ensemble de test : mois 9 a 11 (septembre - novembre)
+test_mask = data['mois'] > 8
+X_test = data[test_mask].drop(columns=['FlagImpaye', 'mois'])
+y_test = data[test_mask]['FlagImpaye']
+\end{lstlisting}
+
+\textbf{Résultat :}
+\begin{itemize}
+    \item Entraînement : 3 899 362 transactions
+    \item Test : 747 411 transactions
+\end{itemize}
+
+\section{Analyse des corrélations}
+
+L'analyse de la matrice de corrélation a révélé plusieurs points importants :
+
+\subsection{Multicolinéarité}
+
+Forte corrélation entre certaines variables :
+\begin{itemize}
+    \item VerifianceCPT1 et VerifianceCPT2 : corrélation > 0.8
+    \item Montant et CA3TRetMtt : corrélation significative
+\end{itemize}
+
+Cette multicolinéarité n'est pas problématique pour les modèles basés sur les arbres (Random Forest, XGBoost, LightGBM) que nous utilisons.
+
+\subsection{Corrélation avec la cible}
+
+Les corrélations avec la variable cible \texttt{FlagImpaye} sont faibles :
+\begin{itemize}
+    \item Corrélation maximale : environ 0.15
+    \item Cela indique que la tâche de classification est intrinsèquement difficile
+\end{itemize}
+
+\section{Résumé du prétraitement}
+
+\begin{table}[H]
+\centering
+\caption{Résumé du prétraitement}
+\begin{tabular}{ll}
+\toprule
+\textbf{Étape} & \textbf{Résultat} \\
+\midrule
+Variables initiales & 23 \\
+Variables supprimées & 5 (Identifiant, CodeDecision, mois, FlagImpaye, autres) \\
+Features finales & 18 \\
+Transactions train & 3 899 362 (0.60\% fraudes) \\
+Transactions test & 747 411 (0.88\% fraudes) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Les données prétraitées ont été sauvegardées au format pickle pour être utilisées dans les étapes de modélisation.

@@ -1,0 +1,70 @@
+% ============================================
+% CHAPITRE 1 : INTRODUCTION
+% ============================================
+
+\section{Contexte}
+
+Le chèque reste un moyen de paiement largement utilisé en France, notamment pour les transactions de montants élevés. Cependant, ce mode de paiement est également sujet à des fraudes, causant des pertes significatives pour les commerçants et les institutions financières.
+
+Le \textbf{Fichier National des Chèques Irréguliers (FNCI)}, géré par la Banque de France, recense les incidents de paiement liés aux chèques. Ce fichier constitue une source précieuse d'informations pour développer des systèmes de détection de fraude.
+
+\section{Problématique}
+
+La détection de fraude par chèque présente plusieurs défis :
+
+\begin{enumerate}
+    \item \textbf{Déséquilibre des classes} : Les fraudes représentent moins de 1\% des transactions, ce qui rend la classification difficile.
+    
+    \item \textbf{Coûts asymétriques} : Les conséquences d'une fraude non détectée (faux négatif) sont bien plus graves que celles d'une fausse alerte (faux positif).
+    
+    \item \textbf{Évolution temporelle} : Les patterns de fraude évoluent dans le temps, nécessitant une validation temporelle des modèles.
+\end{enumerate}
+
+\section{Objectifs du projet}
+
+Ce projet vise à développer un système de détection de fraude en deux parties :
+
+\subsection{Partie 1 : Optimisation du F1-Score}
+
+L'objectif est de maximiser le \textbf{F-mesure} (F1-Score), qui représente la moyenne harmonique entre la précision et le rappel :
+
+\begin{equation}
+    F1 = 2 \times \frac{Precision \times Recall}{Precision + Recall} = \frac{2 \times TP}{2 \times TP + FP + FN}
+\end{equation}
+
+Cette métrique permet d'équilibrer la détection des fraudes (rappel) et la limitation des fausses alertes (précision).
+
+\subsection{Partie 2 : Optimisation de la Marge}
+
+L'objectif est de maximiser la \textbf{marge du commerçant} en tenant compte des coûts réels associés à chaque type d'erreur :
+
+\begin{itemize}
+    \item \textbf{Vrai Négatif (TN)} : Gain de 5\% du montant (marge commerciale)
+    \item \textbf{Faux Positif (FP)} : Perte de 70\% de la marge (manque à gagner)
+    \item \textbf{Faux Négatif (FN)} : Perte variable selon le montant (0\% à 80\%)
+    \item \textbf{Vrai Positif (TP)} : Ni gain ni perte
+\end{itemize}
+
+\section{Méthodologie}
+
+La méthodologie adoptée suit les étapes classiques d'un projet de Machine Learning :
+
+\begin{enumerate}
+    \item \textbf{Exploration des données} : Analyse descriptive et visualisation
+    \item \textbf{Prétraitement} : Nettoyage, sélection de variables, gestion du déséquilibre
+    \item \textbf{Modélisation} : Test de plusieurs algorithmes et techniques de rééchantillonnage
+    \item \textbf{Évaluation} : Comparaison des modèles selon les critères définis
+    \item \textbf{Optimisation} : Ajustement des seuils de décision
+\end{enumerate}
+
+\section{Organisation du rapport}
+
+Ce rapport est organisé comme suit :
+
+\begin{itemize}
+    \item \textbf{Chapitre 2} : Description des données
+    \item \textbf{Chapitre 3} : Prétraitement des données
+    \item \textbf{Chapitre 4} : Modélisation - Partie 1 (F1-Score)
+    \item \textbf{Chapitre 5} : Modélisation - Partie 2 (Marge)
+    \item \textbf{Chapitre 6} : Conclusion et perspectives
+\end{itemize}

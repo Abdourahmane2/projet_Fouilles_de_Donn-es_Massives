@@ -1,0 +1,127 @@
+% ============================================
+% CHAPITRE 6 : CONCLUSION
+% ============================================
+
+\section{Synthèse des résultats}
+
+Ce projet avait pour objectif de développer un système de détection de fraudes sur les transactions par chèque, avec deux critères d'optimisation différents.
+
+\subsection{Partie 1 : Optimisation du F1-Score}
+
+\begin{table}[H]
+\centering
+\caption{Résumé Partie 1}
+\begin{tabular}{ll}
+\toprule
+\textbf{Élément} & \textbf{Résultat} \\
+\midrule
+Meilleur modèle & LightGBM + ADASYN \\
+F1-Score (seuil par défaut) & 0.0685 \\
+F1-Score (seuil optimisé = 0.74) & 0.1070 \\
+Fraudes détectées & 583 / 6 573 (8.9\%) \\
+Amélioration par optimisation du seuil & +56\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Partie 2 : Optimisation de la Marge}
+
+\begin{table}[H]
+\centering
+\caption{Résumé Partie 2}
+\begin{tabular}{ll}
+\toprule
+\textbf{Élément} & \textbf{Résultat} \\
+\midrule
+Meilleur modèle & XGBoost optimisé \\
+Marge obtenue & 2 010 033 € \\
+Marge de référence (sans détection) & 1 941 852 € \\
+Amélioration & +68 181 € (+3.5\%) \\
+Fraudes détectées & 628 / 6 573 (9.6\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Enseignements clés}
+
+\subsection{Sur le déséquilibre des classes}
+
+Le fort déséquilibre des classes (1:166) constitue le défi majeur de ce projet. Les techniques de rééchantillonnage (SMOTE, ADASYN) et l'optimisation du seuil de décision sont essentielles pour obtenir des performances acceptables.
+
+\subsection{Sur l'optimisation du seuil}
+
+L'optimisation du seuil de décision s'est révélée \textbf{cruciale} dans les deux parties :
+\begin{itemize}
+    \item Partie 1 : +56\% de F1-Score
+    \item Partie 2 : Différence entre gain et perte par rapport à la référence
+\end{itemize}
+
+Le seuil par défaut de 0.5 n'est \textbf{jamais optimal} pour les données déséquilibrées.
+
+\subsection{Sur les objectifs différents}
+
+Les deux parties illustrent l'importance de définir clairement l'objectif métier :
+\begin{itemize}
+    \item Le F1-Score traite toutes les erreurs de manière égale
+    \item La marge prend en compte les coûts réels, qui varient selon le montant
+\end{itemize}
+
+Le meilleur modèle pour le F1-Score (LightGBM + ADASYN) n'est pas le meilleur pour la marge (XGBoost optimisé).
+
+\section{Limites du projet}
+
+\subsection{Taux de détection}
+
+Malgré les optimisations, le taux de détection reste faible :
+\begin{itemize}
+    \item Partie 1 : 8.9\% des fraudes détectées
+    \item Partie 2 : 9.6\% des fraudes détectées
+\end{itemize}
+
+Cela s'explique par les corrélations faibles entre les features et la variable cible (maximum ~0.15).
+
+\subsection{Drift temporel}
+
+Le taux de fraude est plus élevé dans l'ensemble de test (0.88\%) que dans l'ensemble d'entraînement (0.60\%), suggérant une évolution des patterns de fraude dans le temps. Un système en production nécessiterait un réentraînement régulier.
+
+\subsection{Données limitées}
+
+Certaines informations potentiellement utiles ne sont pas disponibles :
+\begin{itemize}
+    \item Historique du client
+    \item Informations géographiques
+    \item Comportement temporel (heure, jour de la semaine)
+\end{itemize}
+
+\section{Perspectives}
+
+\subsection{Améliorations techniques}
+
+\begin{enumerate}
+    \item \textbf{Feature engineering} : Créer de nouvelles variables (ratios, agrégations temporelles)
+    \item \textbf{Modèles plus complexes} : Réseaux de neurones, autoencoders pour la détection d'anomalies
+    \item \textbf{Optimisation bayésienne} : Pour le tuning des hyperparamètres
+    \item \textbf{Validation croisée temporelle} : Pour une évaluation plus robuste
+\end{enumerate}
+
+\subsection{Déploiement}
+
+\begin{enumerate}
+    \item \textbf{Système temps réel} : Intégration dans le processus de validation des chèques
+    \item \textbf{Monitoring} : Surveillance des performances et détection du drift
+    \item \textbf{Réentraînement automatique} : Mise à jour périodique du modèle
+    \item \textbf{Interface utilisateur} : Dashboard pour les analystes fraude
+\end{enumerate}
+
+\section{Conclusion finale}
+
+Ce projet démontre la faisabilité d'un système de détection de fraudes par chèque basé sur le Machine Learning. Le système développé permet d'améliorer la marge du commerçant de \textbf{+3.5\%} (+68 181 €) par rapport à une stratégie sans détection.
+
+Les principales leçons tirées sont :
+\begin{enumerate}
+    \item L'importance des techniques de gestion du déséquilibre des classes
+    \item Le rôle crucial de l'optimisation du seuil de décision
+    \item La nécessité d'aligner le critère d'optimisation avec l'objectif métier
+\end{enumerate}
+
+Bien que les performances de détection restent modestes (environ 10\% des fraudes détectées), le gain économique justifie la mise en place d'un tel système.
