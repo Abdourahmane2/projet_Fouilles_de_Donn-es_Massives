@@ -1,6 +1,6 @@
 # Détection de Fraudes - Transactions par Chèque
 
-## 📋 Description du projet
+##  Description du projet
 
 Projet de Fouille de Données Massives (M2 SISE - Université Lyon 2) portant sur la détection de fraudes dans un contexte de données déséquilibrées.
 
@@ -8,7 +8,7 @@ Projet de Fouille de Données Massives (M2 SISE - Université Lyon 2) portant su
 1. Construire un modèle de classification optimisant la **F-mesure**
 2. Adapter le modèle pour maximiser la **marge financière** de l'enseigne
 
-## 📁 Structure du projet
+##  Structure du projet
 
 ```
 fraud-detection-project/
@@ -68,7 +68,7 @@ pip install -r requirements.txt
 ### 4. Ajouter les données
 Placer le fichier de données dans `data/raw/`
 
-## 📊 Données
+##  Données
 
 - **Source** : Enseigne de grande distribution + FNCI + Banque de France
 - **Période** : 02/2017 - 11/2017
@@ -79,7 +79,7 @@ Placer le fichier de données dans `data/raw/`
 - **Train** : 01/02/2017 - 31/08/2017
 - **Test** : 01/09/2017 - 30/11/2017
 
-## 🚀 Utilisation
+##  Utilisation
 
 ### Exécuter l'analyse complète
 ```bash
@@ -91,7 +91,7 @@ python main.py
 jupyter notebook notebooks/
 ```
 
-## 📈 Méthodologie
+##  Méthodologie
 
 ### Partie 1 : Optimisation F-mesure
 1. Analyse exploratoire des données
@@ -104,17 +104,17 @@ jupyter notebook notebooks/
 - Matrice de coûts asymétrique basée sur le montant
 - Optimisation du seuil de décision
 
-## 📝 Résultats
+##  Résultats
 
-| Modèle | F-mesure | Precision | Recall | AUC-ROC |
-|--------|----------|-----------|--------|---------|
-| LightGBM + ADASYN | 0.107  |  | - | - |
+| Modèle | F-mesure | Precision | AUC-ROC |
+|--------|----------|-----------|--------|
+| LightGBM + ADASYN | 0.107  | 0.0388  |  0.7219 | 
 
-## 👥 Auteurs
+##  Auteurs
 
-- Abdourahmane Timera
+- Abdourahmane Timera 
 
-## 📄 Licence
+##  Licence
 
 Projet académique - M2 SISE - Université Lyon 2
 
